@@ -1,5 +1,5 @@
 #$:.unshift(File.join(File.dirname(__FILE__), '..', 'ext'))
-#$:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 #require 'curb'
 #
 #$EMAIL = '<YOUR GMAIL LOGIN>'
@@ -40,11 +40,10 @@
 require 'rubygems'
 require 'optparse'
 require 'curb'
-#https://www.google.com/accounts/ClientLogin \
-#--data-urlencode Email=brad.gushue@example.com --data-urlencode Passwd=new+foundland \
-#-d accountType=GOOGLE \
-#-d source=Google-cURL-Example \
-#-d service=lh2
+require 'nokogiri'
+
+require 'photo_upload_helper.rb'
+require 'google_api_helper.rb'
 
 options = {}
 OptionParser.new do |opts|
@@ -52,16 +51,51 @@ OptionParser.new do |opts|
 
   opts.on('-u', '--username USERNAME/EMAIL', 'Username/Email') { |v| options[:email_address] = v }
   opts.on('-p', '--password PASSWORD', 'Password') { |v| options[:password] = v }
+  opts.on('-an', '--albumname ALBUM_NAME', 'Album Name') { |v| options[:album_name] = v }
 
 end.parse!
 
+photoUploadHelper = PhotoUploadHelper.new
+apiHelper = GoogleApiHelper.new(options[:email_address], options[:password])
 
-c = Curl::Easy.http_post("https://www.google.com/accounts/ClientLogin",
-                         Curl::PostField.content('Email', options[:email_address]),
-                         Curl::PostField.content('Passwd', options[:password]),
-                         Curl::PostField.content('accountType', 'GOOGLE'),
-                         Curl::PostField.content('source', 'Google-cURL-Example'),
-                         Curl::PostField.content('service', 'lh2'))
+#c = Curl::Easy.http_post("https://www.google.com/accounts/ClientLogin",
+#                         Curl::PostField.content('Email', options[:email_address]),
+#                         Curl::PostField.content('Passwd', options[:password]),
+#                         Curl::PostField.content('accountType', 'GOOGLE'),
+#                         Curl::PostField.content('source', 'git-photo-commit'),
+#                         Curl::PostField.content('service', 'lh2'))
+#
+#c.perform
+#puts c.body_str
+#
+#authResponseHash = Hash[c.body_str.each_line.map { |l| l.chomp.split('=', 2) }]
+#
+#p authResponseHash
+#
+#puts authResponseHash["Auth"]
 
-c.perform
-puts c.body_str
+
+doc = Nokogiri::XML(apiHelper::getListOfAlbums)
+
+p doc
+
+#Get list of albums
+albumExists = photoUploadHelper::doesAlbumExist doc, options[:album_name]
+puts "album exists: #{albumExists}"
+if(!albumExists)
+  #photoUploadHelper::createNewAlbum options[:album_name]
+end
+
+#Get the Post link to create new entries
+postLink = doc.xpath('//feed:link[@rel="http://schemas.google.com/g/2005#post"]', 'feed' => 'http://www.w3.org/2005/Atom').first()
+
+# get the link we need to post new albums etc.
+puts "POST link: #{postLink.xpath('@href').to_s}"
+
+#Get the Self link to see what template to use in order to get/create albums
+selfLink = doc.xpath('feed:entry//link[@rel="self"]', 'feed' => 'http://www.w3.org/2005/Atom').first()
+
+# get the link we need to post new albums etc.
+puts "SELF link: #{selfLink.xpath('@href').to_s}"
+
+
