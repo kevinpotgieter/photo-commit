@@ -1,0 +1,9 @@
+<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gphoto='http://schemas.google.com/photos/2007'>
+  <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/photos/2007#album' />
+  <title type='text'>#sample album title#</title>
+  <summary type='text'>Git Commit Shots</summary>
+  <gphoto:location/>
+  <gphoto:access>protected</gphoto:access>
+  <gphoto:commentingEnabled>false</gphoto:commentingEnabled>
+  <gphoto:albumType>InstantUpload</gphoto:albumType>
+</entry>

@@ -9,7 +9,7 @@ require 'google_api_helper.rb'
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: upload_photo.rb [options]"
+  opts.banner = "Usage: picasa_photo_uploader.rb [options]"
 
   opts.on('-u', '--username USERNAME/EMAIL', 'Username/Email') { |v| options[:email_address] = v }
   opts.on('-p', '--password PASSWORD', 'Password') { |v| options[:password] = v }
