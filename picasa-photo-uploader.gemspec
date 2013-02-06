@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name        = 'PicasaPhotoUploader'
+  s.name        = 'picasa-photo-uploader'
   s.version     = '0.0.1'
   s.date        = '2012-12-27'
   s.summary     = "Upload photo taken to G+ Album"
@@ -8,5 +8,5 @@ Gem::Specification.new do |s|
   s.email       = 'potgieter.kevin@gmail.com'
   s.files       = ["lib/PicasaPhotoUploader.rb"]
   s.homepage    =
-    'http://rubygems.org/gems/PicasaPhotoUploader'
+    'http://rubygems.org/gems/picasa-photo-uploader'
 end
