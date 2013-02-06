@@ -1,9 +1,9 @@
-#$:.unshift(File.join(File.dirname(__FILE__), '..', 'ext'))
 $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'rubygems'
 require 'optparse'
 require 'curb'
+require 'imagesnap'
 
 require 'google_api_helper.rb'
 
@@ -17,6 +17,8 @@ OptionParser.new do |opts|
   opts.on('-f', '--file FILE', 'Full File Path') { |v| options[:full_file_path] = v }
 
 end.parse!
+
+ImageSnap.snap(options[:full_file_path])
 
 apiHelper = GoogleApiHelper.new(options[:email_address], options[:password])
 
